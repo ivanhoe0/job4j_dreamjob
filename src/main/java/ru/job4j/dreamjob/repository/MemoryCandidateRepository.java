@@ -8,14 +8,16 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @ThreadSafe
 @Repository
 public class MemoryCandidateRepository implements CandidateRepository {
 
-    private int nextIndex = 1;
+    private final AtomicInteger nextIndex = new AtomicInteger(1);
 
-    private Map<Integer, Candidate> candidates = new HashMap<>();
+    private final ConcurrentHashMap<Integer, Candidate> candidates = new ConcurrentHashMap<>();
 
     private MemoryCandidateRepository() {
         save(new Candidate(0, "John", "Junior Java Developer", LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())));
@@ -25,7 +27,8 @@ public class MemoryCandidateRepository implements CandidateRepository {
 
     @Override
     public Candidate save(Candidate candidate) {
-        candidate.setId(nextIndex++);
+        var id = nextIndex.incrementAndGet();
+        candidate.setId(id);
         candidates.put(candidate.getId(), candidate);
         return candidate;
     }
