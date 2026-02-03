@@ -21,11 +21,11 @@ public class MemoryCandidateRepository implements CandidateRepository {
 
     private MemoryCandidateRepository() {
         save(new Candidate(0, "John", "Junior Java Developer",
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault()), 1));
+                LocalDateTime.now(), 1, 0));
         save(new Candidate(0, "Michael", "Middle Java Developer",
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault()), 1));
+                LocalDateTime.now(), 1, 0));
         save(new Candidate(0, "Shawn", "Senior Java Developer",
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault()), 1));
+                LocalDateTime.now(), 1, 0));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MemoryCandidateRepository implements CandidateRepository {
     public boolean update(Candidate candidate) {
         return candidates.computeIfPresent(candidate.getId(),
                 (id, oldCandidate) -> new Candidate(candidate.getId(), candidate.getName(),
-                        candidate.getDescription(), candidate.getCreationDate(), candidate.getCityId())) != null;
+                        candidate.getDescription(), candidate.getCreationDate(), candidate.getCityId(), candidate.getFileId())) != null;
     }
 
     @Override
