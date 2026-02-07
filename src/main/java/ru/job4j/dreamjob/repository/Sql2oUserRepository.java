@@ -40,12 +40,14 @@ public class Sql2oUserRepository implements UserRepository {
                 return Optional.of(user);
             } catch (Sql2oException e) {
                 var cause = e.getCause();
-                if (cause instanceof SQLException) {
-                    LOGGER.error(e.getMessage());
-                    return Optional.empty();
+                if (cause instanceof SQLException sqlEx) {
+                    if ("23505".equals(sqlEx.getSQLState())) {
+                        LOGGER.error("Такой email уже существует");
+                    } else {
+                        LOGGER.error("SQLState: {}", sqlEx.getSQLState());
+                    }
                 }
-                LOGGER.error(e.getMessage());
-                throw new Sql2oException(e.getMessage());
+                return Optional.empty();
             }
         }
     }
