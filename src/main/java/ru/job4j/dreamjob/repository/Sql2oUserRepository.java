@@ -1,5 +1,6 @@
 package ru.job4j.dreamjob.repository;
 
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -8,6 +9,7 @@ import org.sql2o.Sql2oException;
 import ru.job4j.dreamjob.model.User;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Optional;
 
 @Repository
@@ -37,8 +39,13 @@ public class Sql2oUserRepository implements UserRepository {
                 user.setId(generatedId);
                 return Optional.of(user);
             } catch (Sql2oException e) {
+                var cause = e.getCause();
+                if (cause instanceof PSQLException) {
+                    LOGGER.error(e.getMessage());
+                    return Optional.empty();
+                }
                 LOGGER.error(e.getMessage());
-                return Optional.empty();
+                throw new Sql2oException(e.getMessage());
             }
         }
     }
