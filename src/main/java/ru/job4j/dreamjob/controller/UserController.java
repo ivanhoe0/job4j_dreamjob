@@ -22,24 +22,12 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public String getRegistrationPage(Model model, HttpSession session) {
-        var sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) {
-            sessionUser = new User();
-            sessionUser.setName("Гость");
-        }
-        model.addAttribute("user", sessionUser);
+    public String getRegistrationPage(Model model) {
         return "users/register";
     }
 
     @PostMapping("/register")
-    public String register(Model model, @ModelAttribute User user, HttpSession session) {
-        var sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) {
-            sessionUser = new User();
-            sessionUser.setName("Гость");
-        }
-        model.addAttribute("user", sessionUser);
+    public String register(Model model, @ModelAttribute User user) {
         var savedUser = userService.save(user);
         if (savedUser.isEmpty()) {
             model.addAttribute("message", "Пользователь с такой почтой уже существует");
@@ -49,13 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String getLoginPage(Model model, HttpSession session) {
-        var user = (User) session.getAttribute("user");
-        if (user == null) {
-            user = new User();
-            user.setName("Гость");
-        }
-        model.addAttribute("user", user);
+    public String getLoginPage() {
         return "users/login";
     }
 
