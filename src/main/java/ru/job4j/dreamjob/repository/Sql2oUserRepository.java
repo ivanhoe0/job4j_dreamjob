@@ -40,7 +40,7 @@ public class Sql2oUserRepository implements UserRepository {
                 return Optional.of(user);
             } catch (Sql2oException e) {
                 var cause = e.getCause();
-                if (cause instanceof PSQLException) {
+                if (cause instanceof SQLException) {
                     LOGGER.error(e.getMessage());
                     return Optional.empty();
                 }
